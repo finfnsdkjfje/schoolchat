@@ -10,14 +10,19 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// Store room history for DSA topics
+// Message history for each DSA Major
 const roomHistories = {
   General: [],
-  DataStructures: [],
-  Algorithms: [],
-  WebDev: [],
-  MachineLearning: [],
-  Cybersecurity: []
+  CreativeWriting: [],
+  Dance: [],
+  Guitar: [],
+  Band: [],
+  Orchestra: [],
+  VocalMusic: [],
+  Theatre: [],
+  VisualArts: [],
+  VideoCinemaArts: [],
+  Etc: []
 };
 
 io.on('connection', (socket) => {
