@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DSA & CS Chat Room</title>
+  <title>Denver School of the Arts Chat</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; display: flex; flex-direction: column; }
@@ -13,7 +13,7 @@
     #main-container { display: flex; flex: 1; overflow: hidden; }
 
     /* Sidebar */
-    #sidebar { width: 220px; background: #2f3136; color: white; display: flex; flex-direction: column; padding: 10px 0; }
+    #sidebar { width: 220px; background: #2f3136; color: white; display: flex; flex-direction: column; padding: 10px 0; overflow-y: auto; }
     #sidebar h3 { padding: 10px 15px; font-size: 12px; text-transform: uppercase; color: #8e9297; }
     .channel-btn { background: none; border: none; color: #dcddde; padding: 10px 15px; text-align: left; font-size: 14px; cursor: pointer; width: 100%; }
     .channel-btn:hover { background: #36393f; color: white; }
@@ -39,25 +39,30 @@
 </head>
 <body>
 
-  <header>DSA & CS Majors Chat</header>
+  <header>Denver School of the Arts Chat</header>
 
   <div id="main-container">
     <div id="sidebar">
-      <h3>DSA Topics</h3>
+      <h3>DSA Majors</h3>
       <button class="channel-btn active" onclick="switchRoom('General', this)"># General</button>
-      <button class="channel-btn" onclick="switchRoom('DataStructures', this)"># Data-Structures</button>
-      <button class="channel-btn" onclick="switchRoom('Algorithms', this)"># Algorithms</button>
-      <button class="channel-btn" onclick="switchRoom('WebDev', this)"># Web-Development</button>
-      <button class="channel-btn" onclick="switchRoom('MachineLearning', this)"># Machine-Learning</button>
-      <button class="channel-btn" onclick="switchRoom('Cybersecurity', this)"># Cybersecurity</button>
+      <button class="channel-btn" onclick="switchRoom('Band', this)"># Band</button>
+      <button class="channel-btn" onclick="switchRoom('CreativeWriting', this)"># Creative Writing</button>
+      <button class="channel-btn" onclick="switchRoom('Dance', this)"># Dance</button>
+      <button class="channel-btn" onclick="switchRoom('Guitar', this)"># Guitar</button>
+      <button class="channel-btn" onclick="switchRoom('Orchestra', this)"># Orchestra</button>
+      <button class="channel-btn" onclick="switchRoom('Theatre', this)"># Theatre</button>
+      <button class="channel-btn" onclick="switchRoom('VideoCinemaArts', this)"># Video Cinema Arts</button>
+      <button class="channel-btn" onclick="switchRoom('VisualArts', this)"># Visual Arts</button>
+      <button class="channel-btn" onclick="switchRoom('VocalMusic', this)"># Vocal Music</button>
+      <button class="channel-btn" onclick="switchRoom('Etc', this)"># Etc.</button>
     </div>
 
     <div id="chat-area">
       <div id="setup-box">
-        <div><strong>Current Channel:</strong> <span id="current-room-label">General</span></div>
+        <div><strong>Current Major:</strong> <span id="current-room-label">General</span></div>
         <div>
           <label for="username-input"><strong>Your Name:</strong></label>
-          <input id="username-input" placeholder="Type name..." value="Coder" />
+          <input id="username-input" placeholder="Type name..." value="DSA Student" />
         </div>
       </div>
 
@@ -85,7 +90,7 @@
 
     function switchRoom(roomName, btnElement) {
       currentRoom = roomName;
-      currentRoomLabel.textContent = roomName;
+      currentRoomLabel.textContent = btnElement.textContent.replace('# ', '');
       
       document.querySelectorAll('.channel-btn').forEach(btn => btn.classList.remove('active'));
       btnElement.classList.add('active');
@@ -121,7 +126,7 @@
       e.preventDefault();
       if (input.value.trim()) {
         socket.emit('chat message', {
-          user: usernameInput.value.trim() || 'Coder',
+          user: usernameInput.value.trim() || 'DSA Student',
           text: input.value.trim()
         });
         input.value = '';
