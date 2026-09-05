@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>School Chat Room</title>
+  <title>DSA & CS Chat Room</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; display: flex; flex-direction: column; }
@@ -12,10 +12,10 @@
     
     #main-container { display: flex; flex: 1; overflow: hidden; }
 
-    /* Sidebar for Majors */
-    #sidebar { width: 200px; background: #2f3136; color: white; display: flex; flex-direction: column; padding: 10px 0; }
+    /* Sidebar */
+    #sidebar { width: 220px; background: #2f3136; color: white; display: flex; flex-direction: column; padding: 10px 0; }
     #sidebar h3 { padding: 10px 15px; font-size: 12px; text-transform: uppercase; color: #8e9297; }
-    .channel-btn { background: none; border: none; color: #dcddde; padding: 10px 15px; text-align: left; font-size: 15px; cursor: pointer; width: 100%; }
+    .channel-btn { background: none; border: none; color: #dcddde; padding: 10px 15px; text-align: left; font-size: 14px; cursor: pointer; width: 100%; }
     .channel-btn:hover { background: #36393f; color: white; }
     .channel-btn.active { background: #393c43; color: white; font-weight: bold; }
 
@@ -39,24 +39,25 @@
 </head>
 <body>
 
-  <header>School Chat Room</header>
+  <header>DSA & CS Majors Chat</header>
 
   <div id="main-container">
     <div id="sidebar">
-      <h3>Majors / Rooms</h3>
+      <h3>DSA Topics</h3>
       <button class="channel-btn active" onclick="switchRoom('General', this)"># General</button>
-      <button class="channel-btn" onclick="switchRoom('Engineering', this)"># Engineering</button>
-      <button class="channel-btn" onclick="switchRoom('Business', this)"># Business</button>
-      <button class="channel-btn" onclick="switchRoom('Arts', this)"># Arts</button>
-      <button class="channel-btn" onclick="switchRoom('Science', this)"># Science</button>
+      <button class="channel-btn" onclick="switchRoom('DataStructures', this)"># Data-Structures</button>
+      <button class="channel-btn" onclick="switchRoom('Algorithms', this)"># Algorithms</button>
+      <button class="channel-btn" onclick="switchRoom('WebDev', this)"># Web-Development</button>
+      <button class="channel-btn" onclick="switchRoom('MachineLearning', this)"># Machine-Learning</button>
+      <button class="channel-btn" onclick="switchRoom('Cybersecurity', this)"># Cybersecurity</button>
     </div>
 
     <div id="chat-area">
       <div id="setup-box">
-        <div><strong>Current Room:</strong> <span id="current-room-label">General</span></div>
+        <div><strong>Current Channel:</strong> <span id="current-room-label">General</span></div>
         <div>
           <label for="username-input"><strong>Your Name:</strong></label>
-          <input id="username-input" placeholder="Type name..." value="Student" />
+          <input id="username-input" placeholder="Type name..." value="Coder" />
         </div>
       </div>
 
@@ -80,18 +81,15 @@
 
     let currentRoom = 'General';
 
-    // Join default room on load
     socket.emit('join room', currentRoom);
 
     function switchRoom(roomName, btnElement) {
       currentRoom = roomName;
       currentRoomLabel.textContent = roomName;
       
-      // Update UI button highlights
       document.querySelectorAll('.channel-btn').forEach(btn => btn.classList.remove('active'));
       btnElement.classList.add('active');
 
-      // Request server switch
       socket.emit('join room', roomName);
     }
 
@@ -123,7 +121,7 @@
       e.preventDefault();
       if (input.value.trim()) {
         socket.emit('chat message', {
-          user: usernameInput.value.trim() || 'Student',
+          user: usernameInput.value.trim() || 'Coder',
           text: input.value.trim()
         });
         input.value = '';
