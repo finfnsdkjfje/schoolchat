@@ -10,21 +10,20 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// Store separate message histories for each room/major
+// Store room history for DSA topics
 const roomHistories = {
   General: [],
-  Engineering: [],
-  Business: [],
-  Arts: [],
-  Science: []
+  DataStructures: [],
+  Algorithms: [],
+  WebDev: [],
+  MachineLearning: [],
+  Cybersecurity: []
 };
 
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  // Join a specific room/major
   socket.on('join room', (roomName) => {
-    // Leave previous rooms
     Array.from(socket.rooms).forEach(r => {
       if (r !== socket.id) socket.leave(r);
     });
@@ -32,12 +31,10 @@ io.on('connection', (socket) => {
     socket.join(roomName);
     socket.currentRoom = roomName;
 
-    // Send history for this specific room
     const history = roomHistories[roomName] || [];
     socket.emit('load history', history);
   });
 
-  // Handle incoming message for the active room
   socket.on('chat message', (data) => {
     const room = socket.currentRoom || 'General';
     const messageObject = {
@@ -50,7 +47,6 @@ io.on('connection', (socket) => {
     roomHistories[room].push(messageObject);
     if (roomHistories[room].length > 50) roomHistories[room].shift();
 
-    // Broadcast only to people in this room
     io.to(room).emit('chat message', messageObject);
   });
 
