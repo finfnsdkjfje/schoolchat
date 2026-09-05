@@ -6,44 +6,60 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve the HTML file when someone visits the website
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// Store messages in memory so new users can see chat history
-const chatHistory = [];
+// Store separate message histories for each room/major
+const roomHistories = {
+  General: [],
+  Engineering: [],
+  Business: [],
+  Arts: [],
+  Science: []
+};
 
-// Handle WebSocket connections
 io.on('connection', (socket) => {
-  console.log('A user joined the chat');
+  console.log('A user connected');
 
-  // Send past messages to the person who just joined
-  socket.emit('load history', chatHistory);
+  // Join a specific room/major
+  socket.on('join room', (roomName) => {
+    // Leave previous rooms
+    Array.from(socket.rooms).forEach(r => {
+      if (r !== socket.id) socket.leave(r);
+    });
 
-  // Listen for a incoming chat message
+    socket.join(roomName);
+    socket.currentRoom = roomName;
+
+    // Send history for this specific room
+    const history = roomHistories[roomName] || [];
+    socket.emit('load history', history);
+  });
+
+  // Handle incoming message for the active room
   socket.on('chat message', (data) => {
+    const room = socket.currentRoom || 'General';
     const messageObject = {
       user: data.user || 'Anonymous',
       text: data.text,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    // Save message to history (keep last 50)
-    chatHistory.push(messageObject);
-    if (chatHistory.length > 50) chatHistory.shift();
+    if (!roomHistories[room]) roomHistories[room] = [];
+    roomHistories[room].push(messageObject);
+    if (roomHistories[room].length > 50) roomHistories[room].shift();
 
-    // Broadcast the message to EVERYONE connected
-    io.emit('chat message', messageObject);
+    // Broadcast only to people in this room
+    io.to(room).emit('chat message', messageObject);
   });
 
   socket.on('disconnect', () => {
-    console.log('A user left the chat');
+    console.log('A user disconnected');
   });
 });
 
-// Run server on port 3000
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Chat room is running on port ${PORT}`);
+  console.log(`Chat room running on port ${PORT}`);
 });
